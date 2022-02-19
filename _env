@@ -1,0 +1,24 @@
+#Instance
+
+# Prefix will be added to the name of each container:
+#PREFIX=_PROD
+
+# =====================================
+# Application
+#KIWI_DB_PASSWORD=
+# Image name from the hub.docker.com:
+#APP_IMAGE=kiwitcms/kiwi:latest
+
+# =====================================
+# Database parameters:
+#DB_IMAGE=postgres:latest
+#POSTGRES_DB=kiwi
+#POSTGRES_USER=kiwi
+#POSTGRES_DB_PORT=5432
+
+# =====================================
+# PgAdmin credentials:
+#PGADMIN_EMAIL=your@domain.com
+#PGADMIN_PORT=6015
+#PGADMIN_PASSWORD=
+

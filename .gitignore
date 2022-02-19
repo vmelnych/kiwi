@@ -1,0 +1,5 @@
+src/*
+*.env
+*.secret
+_*.sh
+config/local_settings.py

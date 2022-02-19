@@ -1,0 +1,60 @@
+version: '2'
+
+services:
+    db:
+        container_name: kiwi_db${PREFIX:-}
+        image: ${DB_IMAGE:-postgres:latest}
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        restart: always
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-kiwi}
+            POSTGRES_USER: ${POSTGRES_USER:-kiwi}
+            POSTGRES_PASSWORD_FILE: /run/secrets/pg_secret
+        secrets:
+        - pg_secret
+
+    web:
+        container_name: kiwi_web${PREFIX}
+        depends_on:
+            - db
+        restart: always
+        image: ${APP_IMAGE:-kiwitcms/kiwi:latest}
+        ports:
+            - 80:8080
+            - 443:8443
+        volumes:
+            - uploads:/Kiwi/uploads:Z
+            - ./config/local_settings.py:/venv/lib64/python3.8/site-packages/tcms/settings/local_settings.py
+        environment:
+            KIWI_DB_ENGINE: django.db.backends.postgresql
+            KIWI_DB_HOST: db
+            KIWI_DB_PORT: ${POSTGRES_DB_PORT:-5432}
+            KIWI_DB_NAME: ${POSTGRES_DB:-kiwi}
+            KIWI_DB_USER: ${POSTGRES_USER:-kiwi}
+            KIWI_DB_PASSWORD: ${KIWI_DB_PASSWORD:-FSyL5NivO4fQWaDMYek}
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: kiwi_pga${PREFIX}
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@demo.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-demo}
+        volumes:
+        - pgadmin-data:/var/lib/pgadmin
+        ports:
+        - ${PGADMIN_PORT:-81}:80
+        profiles: 
+        - pgadmin
+        depends_on:
+        - db
+        - web
+
+volumes:
+    db_data:
+    pgadmin-data:
+    uploads:
+
+secrets:
+  pg_secret:
+    file: ./postgres.secret
